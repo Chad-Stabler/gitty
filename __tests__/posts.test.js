@@ -34,6 +34,11 @@ describe('backend-express-template routes', () => {
     );
     
   });
+  it('should not create post for unauth users', async () => {
+    await agent.delete('/api/v1/github/callback');
+    const res = await agent.post('/api/v1/posts').send({ post: 'this should get blocked' });
+    expect(res.status).toBe(401);
+  });
   afterAll(() => {
     pool.end();
   });
