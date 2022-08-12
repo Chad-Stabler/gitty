@@ -21,7 +21,19 @@ describe('backend-express-template routes', () => {
     await agent.delete('/api/v1/github/callback');
     const res = await agent.get('/api/v1/posts');
     expect(res.status).toBe(401);
-  })
+  });
+  it('should create post for auth users', async () => {
+    const post = { post: 'Chad has created his first post' };
+    await agent.get('/api/v1/github/callback?code=42');
+    const res = await agent.post('/api/v1/posts').send(post);
+    expect(res.body).toEqual(
+      {
+        id: expect.any(String),
+        post: 'Chad has created his first post'
+      }
+    );
+    
+  });
   afterAll(() => {
     pool.end();
   });
